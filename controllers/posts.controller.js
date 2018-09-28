@@ -12,6 +12,13 @@ module.exports.create = (req, res, next) => {
   const post = new Post(req.body);
   post.user = req.user.id;
 
+  if (req.files) {
+    post.images = [];
+    for (const file in req.files) {
+      post.images.push(`${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+    }
+  }
+
   post.save()
     .then(post => res.status(201).json(post))
     .catch(error => next(error));
