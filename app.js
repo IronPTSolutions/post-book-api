@@ -9,13 +9,17 @@ const session = require('express-session');
 const cors = require('cors');
 
 require('./config/db.config');
+require('./config/passport.config').setup(passport);
 const corsConfig = require('./config/cors.config');
+
+const usersRouter = require('./routes/users.routes');
+const sessionsRouter = require('./routes/sessions.routes');
 
 const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors(corsConfig));
@@ -28,6 +32,11 @@ app.use(session({
     maxAge: 2419200000
   }
 }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/users', usersRouter);
+app.use('/sessions', sessionsRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
