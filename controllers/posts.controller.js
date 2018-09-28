@@ -14,7 +14,7 @@ module.exports.create = (req, res, next) => {
 
   if (req.files) {
     post.images = [];
-    for (const file in req.files) {
+    for (const file of req.files) {
       post.images.push(`${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
     }
   }
