@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require('../models/user.model');
 const Post = require('../models/post.model');
 const Comment = require('../models/comment.model');
@@ -35,11 +36,10 @@ module.exports.create = (req, res, next) => {
 }
 
 module.exports.delete = (req, res, next) => {
-  Promise.all(
+  Promise.all([
     User.findByIdAndDelete(req.user.id),
     Post.deleteMany({ user: mongoose.Types.ObjectId(req.params.userId)}),
-    Comment.deleteMany({ user: mongoose.Types.ObjectId(req.params.userId)})
-    )
+    Comment.deleteMany({ user: mongoose.Types.ObjectId(req.params.userId)})])
     .then(([user]) => {
       if (!user) {
         throw createError(404, 'User not found');
