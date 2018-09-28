@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 module.exports.list = (req, res, next) => {
   Post.find({ user: mongoose.Types.ObjectId(req.params.userId) })
-    .then(phones => res.json(phones))
+    .then(posts => res.json(posts))
     .catch(error => next(error));
 }
 
@@ -19,11 +19,12 @@ module.exports.create = (req, res, next) => {
 
 module.exports.get = (req, res, next) => {
   Post.findById({ user: req.params.userId, _id: req.params.id })
-    .then(phone => {
-      if (!phone) {
+    .populate({ path: 'comments', populate: { path: 'user' } })
+    .then(post => {
+      if (!post) {
         throw createError(404, 'Post not found');
       } else {
-        res.json(phone);
+        res.json(post);
       }
     })
     .catch(error => {
@@ -33,8 +34,8 @@ module.exports.get = (req, res, next) => {
 
 module.exports.delete = (req, res, next) => {
   Post.findOneAndDelete({ user: req.params.userId, _id: req.params.id })
-    .then(phone => {
-      if (!phone) {
+    .then(post => {
+      if (!post) {
         throw createError(404, 'Post not found');
       } else {
         res.status(204).json();
