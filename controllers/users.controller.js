@@ -1,14 +1,17 @@
 const User = require('../models/user.model');
+const Post = require('../models/post.model');
 const createError = require('http-errors');
 
 module.exports.list = (req, res, next) => {
   User.find()
+    .populate({ path: 'posts', select: 'id' })
     .then(users => res.json(users))
     .catch(error => next(error));
 }
 
 module.exports.get = (req, res, next) => {
   User.findById(req.params.id)
+    .populate('posts')
     .then(user => res.json(user))
     .catch(error => next(error));
 }
@@ -31,8 +34,10 @@ module.exports.create = (req, res, next) => {
 }
 
 module.exports.delete = (req, res, next) => {
-  User.findByIdAndDelete(req.user.id)
-    .then(user => {
+  Promise.all(
+    User.findByIdAndDelete(req.user.id),
+    Post.deleteMany({ user: mongoose.Types.ObjectId(req.params.userId)}))
+    .then(([user]) => {
       if (!user) {
         throw createError(404, 'User not found');
       } else {

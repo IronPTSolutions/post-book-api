@@ -14,6 +14,7 @@ const corsConfig = require('./config/cors.config');
 
 const usersRouter = require('./routes/users.routes');
 const sessionsRouter = require('./routes/sessions.routes');
+const postsRouter = require('./routes/posts.routes');
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use(passport.session());
 
 app.use('/users', usersRouter);
 app.use('/sessions', sessionsRouter);
+app.use('/users/:userId/posts', postsRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
