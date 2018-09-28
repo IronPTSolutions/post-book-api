@@ -8,6 +8,9 @@ const passport = require('passport');
 const session = require('express-session');
 const cors = require('cors');
 
+require('./config/db.config');
+const corsConfig = require('./config/cors.config');
+
 const app = express();
 
 app.use(logger('dev'));
@@ -15,6 +18,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors(corsConfig));
+app.use(session({
+  secret: process.env.COOKIE_SECRET || 'Super Secret',
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    maxAge: 2419200000
+  }
+}));
 
 app.use(function (req, res, next) {
   next(createError(404));
