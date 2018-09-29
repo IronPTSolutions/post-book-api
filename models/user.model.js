@@ -41,7 +41,7 @@ userSchema.virtual('posts', {
 
 userSchema.virtual('avatar')
   .get(function() {
-    return `https://api.adorable.io/avatars/285/${this.email}`;
+    return `http://identicon.org?t=${this.email}&s=256`;
   })
 
 userSchema.pre('save', function save(next) {
