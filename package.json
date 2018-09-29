@@ -6,6 +6,9 @@
     "start": "node ./bin/www",
     "dev": "DEBUG=post-book-api:* nodemon ./bin/www"
   },
+  "engines": {
+    "node": "8.11.1"
+  },
   "dependencies": {
     "bcrypt": "^3.0.1",
     "cookie-parser": "~1.4.3",
