@@ -26,6 +26,7 @@ module.exports.create = (req, res, next) => {
 
 module.exports.get = (req, res, next) => {
   Post.findById({ user: req.params.userId, _id: req.params.id })
+    .populate('user')
     .populate({ path: 'comments', populate: { path: 'user' } })
     .then(post => {
       if (!post) {
